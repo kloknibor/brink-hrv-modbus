@@ -1,0 +1,25 @@
+start_boost:
+  name: Start boost
+  description: Start a temporary High ventilation boost. It refuses to replace another active Modbus override.
+  fields:
+    entry_id:
+      name: Config entry ID
+      description: Required only when more than one Brink appliance is configured.
+      selector:
+        text:
+stop_boost:
+  name: Stop boost
+  description: Stop an integration-owned temporary boost and restore Auto / RF Control.
+  fields:
+    entry_id:
+      name: Config entry ID
+      selector:
+        text:
+return_to_auto:
+  name: Return to Auto / RF Control
+  description: Explicitly write 8000=0 to release any Modbus control override.
+  fields:
+    entry_id:
+      name: Config entry ID
+      selector:
+        text:

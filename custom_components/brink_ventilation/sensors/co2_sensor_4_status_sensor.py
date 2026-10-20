@@ -1,6 +1,4 @@
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity)
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 
 STATUS = {
     "Error": 0,
@@ -9,10 +7,11 @@ STATUS = {
     "Warming Up": 3,
     "Running": 4,
     "Calibrating": 5,
-    "Self Test": 6
+    "Self Test": 6,
 }
 
 from ..entity import BrinkEntity
+
 
 class CO2Sensor4StatusSensor(BrinkEntity, SensorEntity):
     """CO2 Sensor 4 Status Sensor"""
@@ -22,11 +21,11 @@ class CO2Sensor4StatusSensor(BrinkEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_should_poll = False  # do not call update()
     _attr_entity_registry_enabled_default = False
-    
+
     def __init__(self, coordinator, entry_id):
         super().__init__(coordinator, entry_id)
-        self._attr_unique_id = f"{entry_id}_co2_sensor_4_status"  
-        
+        self._attr_unique_id = f"{entry_id}_co2_sensor_4_status"
+
     @property
     def native_value(self):
         for name, position in STATUS.items():

@@ -1,16 +1,30 @@
 {
-    "config": {
-        "abort": {
-            "no_devices_found": "No devices found on the network",
-            "single_instance_allowed": "Already configured. Only a single configuration possible."
-        },
-        "error": {
-            "cannot_connect": "Failed to connect"
-        },
-        "step": {
-            "confirm": {
-                "description": "Do you want to start setup?"
-            }
+  "config": {
+    "abort": {
+      "no_devices_found": "No devices found on the network",
+      "single_instance_allowed": "Already configured. Only a single configuration possible."
+    },
+    "error": {
+      "cannot_connect": "Failed to connect"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "host": "Gateway host or IP address",
+          "port": "Modbus TCP port"
         }
+      }
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Heat recovery estimate",
+        "description": "Optional: provide a Home Assistant indoor/extract air temperature entity for the estimated heat recovery efficiency.",
+        "data": {
+          "indoor_temperature_entity": "Indoor/extract temperature entity"
+        }
+      }
+    }
+  }
 }

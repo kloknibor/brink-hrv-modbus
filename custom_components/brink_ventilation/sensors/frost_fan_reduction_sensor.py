@@ -2,11 +2,10 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import (
-    PERCENTAGE
-)
+from homeassistant.const import PERCENTAGE
 
 from ..entity import BrinkEntity
+
 
 class FrostFanReductionSensor(BrinkEntity, SensorEntity):
     """Frost Fan Reduction Sensor (register 4072)"""

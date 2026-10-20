@@ -1,11 +1,13 @@
 """
-Number entity to set the days before a filter warning for the custom Home Assistant integration.
+Number entity to set the days before a filter warning for the integration.
 """
+
 from homeassistant.components.number import NumberEntity
 from homeassistant.const import UnitOfTime
 from homeassistant.helpers.entity import EntityCategory
 
 from ..entity import BrinkEntity
+
 
 class FilterWarningDaysNumber(BrinkEntity, NumberEntity):
     """Number entity for the days before a filter warning (register 6120)."""

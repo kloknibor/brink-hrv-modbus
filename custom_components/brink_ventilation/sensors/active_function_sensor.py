@@ -1,6 +1,4 @@
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity)
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 
 STATUS = {
     0: "Standby",
@@ -21,6 +19,7 @@ STATUS = {
 }
 
 from ..entity import BrinkEntity
+
 
 class ActiveFunctionSensor(BrinkEntity, SensorEntity):
     """Active Function Sensor (register 4020)"""

@@ -3,11 +3,10 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import (
-    UnitOfTemperature
-) 
+from homeassistant.const import UnitOfTemperature
 
 from ..entity import BrinkEntity
+
 
 class SupplyTemperatureSensor(BrinkEntity, SensorEntity):
     """Supply Temperature Sensor"""
@@ -17,11 +16,11 @@ class SupplyTemperatureSensor(BrinkEntity, SensorEntity):
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_should_poll = False  # do not call update()
-   
+
     def __init__(self, coordinator, entry_id):
         super().__init__(coordinator, entry_id)
-        self._attr_unique_id = f"{entry_id}_supply_temperature"  
-        
+        self._attr_unique_id = f"{entry_id}_supply_temperature"
+
     @property
     def native_value(self):
         return self.coordinator.supply_temperature

@@ -4,7 +4,11 @@ target-version = "py314"
 
 [lint]
 select = [
-    "ALL",
+    "E",
+    "F",
+    "I",
+    "UP",
+    "W",
 ]
 
 ignore = [
@@ -13,6 +17,7 @@ ignore = [
     "D212", # multi-line-summary-first-line (incompatible with formatter)
     "COM812", # incompatible with formatter
     "ISC001", # incompatible with formatter
+    "E402", # legacy entity modules define their register maps before shared imports
 ]
 
 [lint.flake8-pytest-style]

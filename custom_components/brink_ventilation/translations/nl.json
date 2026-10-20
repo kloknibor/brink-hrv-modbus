@@ -1,0 +1,26 @@
+{
+  "config": {
+    "error": {
+      "cannot_connect": "Verbinding met de Modbus-gateway mislukt"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "host": "Hostnaam of IP-adres van de gateway",
+          "port": "Modbus TCP-poort"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Warmteterugwinning schatting",
+        "description": "Optioneel: kies een Home Assistant-entiteit voor binnen-/afzuigluchttemperatuur voor het geschatte WTW-rendement.",
+        "data": {
+          "indoor_temperature_entity": "Entiteit voor binnen-/afzuigluchttemperatuur"
+        }
+      }
+    }
+  }
+}

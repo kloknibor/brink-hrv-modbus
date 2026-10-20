@@ -1,6 +1,4 @@
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity)
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 
 STATUS = {
     0: "Not Initialized",
@@ -23,6 +21,7 @@ STATUS = {
 }
 
 from ..entity import BrinkEntity
+
 
 class FrostStatusSensor(BrinkEntity, SensorEntity):
     """Frost Status Sensor (register 4070)"""

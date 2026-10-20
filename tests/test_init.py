@@ -13,11 +13,25 @@ USER_INPUT = {CONF_HOST: "192.168.1.50", CONF_PORT: 502}
 
 
 def _mock_brink() -> MagicMock:
-    """A Brink instance whose data-fetch methods all resolve successfully."""
+    """A Brink instance whose grouped poll resolves successfully."""
     brink = MagicMock(spec=Brink)
-    for attr in dir(Brink):
-        if attr.startswith("get_"):
-            setattr(brink, attr, AsyncMock(return_value=0))
+    brink.read_snapshot = AsyncMock(
+        return_value={
+            "supply_temperature": 20.0,
+            "supply_humidity": 50,
+            "exhaust_temperature": 21.0,
+            "exhaust_humidity": 55,
+            "supply_flow_setpoint": 100,
+            "supply_flow": 95,
+            "exhaust_flow_setpoint": 100,
+            "exhaust_flow": 95,
+            "modbus_control_mode": 0,
+            "fan_state": 2,
+            "direct_flow": 150,
+            "standby_mode": 0,
+        }
+    )
+    brink.close = MagicMock()
     return brink
 
 
@@ -69,7 +83,7 @@ async def test_setup_entry_retries_when_first_refresh_fails(hass):
     entry.add_to_hass(hass)
 
     brink = _mock_brink()
-    brink.get_supply_fan_status = AsyncMock(side_effect=ModbusException("read failed"))
+    brink.read_snapshot = AsyncMock(side_effect=ModbusException("read failed"))
 
     with patch(
         "custom_components.brink_ventilation.coordinator.Brink.initialize",

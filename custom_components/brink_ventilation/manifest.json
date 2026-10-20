@@ -1,17 +1,17 @@
 {
   "domain": "brink_ventilation",
-  "name": "Brink HRV Modbus",
+  "name": "Brink HRV Modbus (kloknibor)",
   "codeowners": [
-    "@jarcovlieger"
+    "@kloknibor"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/jarcovlieger/brink-hrv-modbus",
+  "documentation": "https://github.com/kloknibor/brink-hrv-modbus",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/jarcovlieger/brink-hrv-modbus/issues",
+  "issue_tracker": "https://github.com/kloknibor/brink-hrv-modbus/issues",
   "quality_scale": "bronze",
   "requirements": [
     "pymodbus>=3.11.2"
   ],
-  "version": "1.5.0"  
+  "version": "2.0.0"
 }

@@ -3,11 +3,10 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import (
-    CONCENTRATION_PARTS_PER_MILLION
-) 
+from homeassistant.const import CONCENTRATION_PARTS_PER_MILLION
 
 from ..entity import BrinkEntity
+
 
 class CO2Sensor2Sensor(BrinkEntity, SensorEntity):
     """CO2 Sensor 2 Sensor"""
@@ -21,8 +20,8 @@ class CO2Sensor2Sensor(BrinkEntity, SensorEntity):
 
     def __init__(self, coordinator, entry_id):
         super().__init__(coordinator, entry_id)
-        self._attr_unique_id = f"{entry_id}_co2_sensor_2"  
-        
+        self._attr_unique_id = f"{entry_id}_co2_sensor_2"
+
     @property
     def native_value(self):
         return self.coordinator.CO2_sensor_2

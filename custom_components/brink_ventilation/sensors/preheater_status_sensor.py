@@ -1,6 +1,4 @@
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity)
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 
 STATUS = {
     0: "Initialize",
@@ -10,6 +8,7 @@ STATUS = {
 }
 
 from ..entity import BrinkEntity
+
 
 class PreheaterStatusSensor(BrinkEntity, SensorEntity):
     """Preheater Status Sensor (register 4060)"""

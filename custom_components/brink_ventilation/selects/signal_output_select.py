@@ -1,6 +1,7 @@
 """
 Select entity to configure the Brink HRV signal output (Modbus register 6170).
 """
+
 from homeassistant.components.select import SelectEntity
 from homeassistant.helpers.entity import EntityCategory
 
@@ -12,6 +13,7 @@ OPTIONS = {
     "Error Status": 2,
     "Filter Warning and Error Status": 3,
 }
+
 
 class BrinkSignalOutputSelect(BrinkEntity, SelectEntity):
     """Select entity for the signal output setting (register 6170)."""

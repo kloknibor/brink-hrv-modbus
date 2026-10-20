@@ -1,12 +1,14 @@
 """
 Switch entity to place the Brink HRV unit into standby via Modbus register 8003.
 """
+
 from homeassistant.components.switch import SwitchEntity
 
 from ..entity import BrinkEntity
 
 STANDBY = 1
 NORMAL = 2
+
 
 class BrinkStandbySwitch(BrinkEntity, SwitchEntity):
     """Switch that toggles the unit between standby (8003=1) and normal (8003=2)."""

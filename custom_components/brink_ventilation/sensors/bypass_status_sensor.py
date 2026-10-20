@@ -1,6 +1,4 @@
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity)
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 
 STATUS = {
     0: "Initialize",
@@ -11,6 +9,7 @@ STATUS = {
 }
 
 from ..entity import BrinkEntity
+
 
 class BypassStatusSensor(BrinkEntity, SensorEntity):
     """Bypass Status Sensor (register 4050)"""

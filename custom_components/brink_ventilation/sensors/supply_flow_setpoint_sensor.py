@@ -3,11 +3,10 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorStateClass,
 )
-from homeassistant.const import (
-    UnitOfVolumeFlowRate
-)
+from homeassistant.const import UnitOfVolumeFlowRate
 
 from ..entity import BrinkEntity
+
 
 class SupplyFlowSetpointSensor(BrinkEntity, SensorEntity):
     """Supply Flow Setpoint Sensor"""
