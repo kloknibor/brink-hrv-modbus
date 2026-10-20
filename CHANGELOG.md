@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2 — advanced telemetry hotfix
+
+- Correct the advanced-sensor metadata handling so Home Assistant registers the
+  new airflow, moisture, and calculated diagnostic entities.
+
 ## 2.0.1 — setup hotfix
 
 - Prevent the coordinator from assigning its read-only calculated boost-time

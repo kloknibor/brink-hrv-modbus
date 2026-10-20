@@ -108,7 +108,12 @@ class BrinkDataSensor(BrinkEntity, SensorEntity):
         self, coordinator: Any, entry_id: str, description: BrinkSensorDescription
     ) -> None:
         super().__init__(coordinator, entry_id)
-        self.entity_description = description
+        # This is deliberately not assigned to ``entity_description``.
+        # Home Assistant reserves that attribute for SensorEntityDescription
+        # instances and reads fields such as ``translation_key`` from it while
+        # adding an entity.  BrinkSensorDescription is our runtime mapping,
+        # not Home Assistant's metadata object.
+        self._description = description
         self._attr_name = description.name
         self._attr_unique_id = f"{entry_id}_{description.suffix}"
         self._attr_native_unit_of_measurement = description.unit
@@ -121,10 +126,10 @@ class BrinkDataSensor(BrinkEntity, SensorEntity):
 
     @property
     def native_value(self) -> Any:
-        value = getattr(self.coordinator, self.entity_description.key, None)
-        if self.entity_description.enum is None or value is None:
+        value = getattr(self.coordinator, self._description.key, None)
+        if self._description.enum is None or value is None:
             return value
-        return self.entity_description.enum.get(value, "Unknown")
+        return self._description.enum.get(value, "Unknown")
 
 
 DESCRIPTIONS: tuple[BrinkSensorDescription, ...] = (

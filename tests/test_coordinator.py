@@ -12,6 +12,10 @@ from custom_components.brink_ventilation.coordinator import (
     dew_point,
 )
 from custom_components.brink_ventilation.lib.brink import Brink, BrinkModbusError
+from custom_components.brink_ventilation.sensors.advanced_sensors import (
+    DESCRIPTIONS,
+    BrinkDataSensor,
+)
 
 
 def snapshot(**overrides):
@@ -92,6 +96,18 @@ def mock_brink(values=None):
     brink.set_standby_mode = AsyncMock()
     brink.reset_filter_warning = AsyncMock()
     return brink
+
+
+def test_advanced_sensor_keeps_runtime_mapping_separate_from_ha_metadata(hass):
+    """The runtime mapping must not be treated as an HA EntityDescription."""
+    coordinator = BrinkHrvModbusCoordinator(hass)
+    coordinator.fan_control_type = 1
+
+    sensor = BrinkDataSensor(coordinator, "entry", DESCRIPTIONS[0])
+
+    assert sensor.native_value == "Constant Flow"
+    assert sensor._description is DESCRIPTIONS[0]
+    assert getattr(sensor, "entity_description", None) is None
 
 
 async def test_update_data_populates_flow_and_calculated_attributes(hass):
