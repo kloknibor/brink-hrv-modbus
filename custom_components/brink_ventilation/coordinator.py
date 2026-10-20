@@ -218,6 +218,12 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def _apply_data(self, data: dict[str, Any]) -> None:
         """Expose snapshot keys as coordinator attributes for existing entities."""
         for key, value in data.items():
+            # These are derived, read-only properties.  They belong in
+            # ``coordinator.data`` for their sensor entities, but assigning
+            # them as attributes would attempt to set a @property without a
+            # setter during the first coordinator refresh.
+            if key in {"boost_elapsed_minutes", "boost_remaining_minutes"}:
+                continue
             setattr(self, key, value)
         self.modbus_contol_mode = self.modbus_control_mode
         self.filter_used_in_cubic_meters_per_hour = self.filter_used_volume
