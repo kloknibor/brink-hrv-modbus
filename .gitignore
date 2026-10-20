@@ -10,7 +10,10 @@ scripts.yaml
 secrets.yaml
 configuration.yaml
 automations.yaml
-blueprints/
+blueprints/*
+!blueprints/automation/
+!blueprints/automation/brink_ventilation/
+!blueprints/automation/brink_ventilation/*.yaml
 .ha_run*
 .HA_VERSION
 /.cache

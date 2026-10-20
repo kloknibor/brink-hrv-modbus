@@ -1,0 +1,126 @@
+blueprint:
+  name: Brink HRV – internal moisture analytics shower boost
+  description: >-
+    Opt-in boost based on the integration's exhaust absolute-humidity rolling
+    baseline and rise rate. It avoids using exhaust relative humidity alone,
+    which can be naturally high after heat-exchanger cooling/condensation.
+  domain: automation
+  input:
+    humidity_deviation:
+      name: Exhaust humidity baseline deviation sensor
+      selector:
+        entity:
+          filter:
+            - domain: sensor
+    humidity_rise_rate:
+      name: Exhaust humidity rise-rate sensor
+      selector:
+        entity:
+          filter:
+            - domain: sensor
+    boost_active:
+      name: Brink Boost Active binary sensor
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+    start_deviation:
+      name: Start deviation from rolling baseline
+      description: Tune for the installation; 1.5 g/m³ is only a starting point.
+      default: 1.5
+      selector:
+        number:
+          min: 0.2
+          max: 10
+          step: 0.1
+          unit_of_measurement: g/m³
+    start_rate:
+      name: Start rise rate
+      default: 0.25
+      selector:
+        number:
+          min: 0.01
+          max: 5
+          step: 0.01
+          unit_of_measurement: g/m³/min
+    start_for:
+      name: Moisture signal must persist for
+      default:
+        minutes: 2
+      selector:
+        duration:
+    stop_deviation:
+      name: Recovery deviation
+      default: 0.5
+      selector:
+        number:
+          min: 0
+          max: 8
+          step: 0.1
+          unit_of_measurement: g/m³
+    stop_for:
+      name: Recovery must persist for
+      default:
+        minutes: 10
+      selector:
+        duration:
+    minimum_run:
+      name: Minimum boost run time
+      default:
+        minutes: 10
+      selector:
+        duration:
+    cooldown:
+      name: Cooldown after stopping
+      default:
+        minutes: 15
+      selector:
+        duration:
+    maximum_run:
+      name: Maximum waiting time
+      description: Match or exceed the integration's Boost Maximum Duration.
+      default:
+        minutes: 60
+      selector:
+        duration:
+mode: single
+max_exceeded: silent
+variables:
+  deviation_entity: !input humidity_deviation
+  rate_entity: !input humidity_rise_rate
+  deviation_start: !input start_deviation
+  rate_start: !input start_rate
+triggers:
+  - trigger: numeric_state
+    entity_id: !input humidity_deviation
+    above: !input start_deviation
+    for: !input start_for
+  - trigger: numeric_state
+    entity_id: !input humidity_rise_rate
+    above: !input start_rate
+    for: !input start_for
+conditions:
+  - condition: state
+    entity_id: !input boost_active
+    state: "off"
+  - condition: template
+    value_template: >-
+      {% set deviation = states(deviation_entity) | float(none) %}
+      {% set rate = states(rate_entity) | float(none) %}
+      {{ deviation is not none and rate is not none and
+         (deviation >= deviation_start or rate >= rate_start) }}
+actions:
+  - action: brink_ventilation.start_boost
+  - delay: !input minimum_run
+  - wait_for_trigger:
+      - trigger: numeric_state
+        entity_id: !input humidity_deviation
+        below: !input stop_deviation
+        for: !input stop_for
+    timeout: !input maximum_run
+    continue_on_timeout: true
+  - condition: state
+    entity_id: !input boost_active
+    state: "on"
+  - action: brink_ventilation.stop_boost
+  - delay: !input cooldown

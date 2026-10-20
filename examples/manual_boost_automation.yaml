@@ -1,0 +1,9 @@
+alias: Brink manual shower boost example
+description: Start a bounded temporary boost from a dashboard helper or another automation.
+triggers:
+  - trigger: state
+    entity_id: input_button.shower_boost
+conditions: []
+actions:
+  - action: brink_ventilation.start_boost
+mode: single

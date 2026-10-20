@@ -19,7 +19,7 @@ This repo ships a lightweight [dev container](https://containers.dev/) for worki
 
    On first run this also creates a `config/` test instance. HA logs to the terminal; leave it running.
 4. Open [http://localhost:8123](http://localhost:8123) (VS Code forwards the port automatically) and go through onboarding.
-5. Add the integration via **Settings → Devices & Services → + Add Integration → Brink HRV Modbus**, pointing it at a real or test Modbus gateway.
+5. Add the integration via **Settings → Devices & Services → + Add Integration → Brink HRV Modbus (kloknibor)**, pointing it at a real or test native Modbus TCP gateway. Do not use a real ventilation appliance for automated write tests.
 
 Code changes under `custom_components/brink_ventilation` require restarting `scripts/develop` (Ctrl+C, then rerun) to take effect — there is no hot reload.
 
@@ -34,6 +34,15 @@ Code changes under `custom_components/brink_ventilation` require restarting `scr
 | `scripts/test` | Runs the pytest suite under `tests/`. |
 | `config/configuration.yaml` | The only tracked file under `config/` — everything else there is runtime state and gitignored. |
 | `requirements_dev.txt` | Pinned `homeassistant` and `pymodbus` versions used for local development. |
+
+## Hardware-control tests
+
+Unit tests must mock Modbus responses. Verify changes on hardware only after
+reviewing every write register and starting with monitoring mode. The production
+client serializes reads/writes, groups safe documented register blocks, and
+requires readback after writes; tests should cover both values and Modbus
+exception responses. The TCP gateway transport remains PyModbus TCP; it is not
+replaced with USB serial or ESPHome.
 
 ## Why `configuration.yaml` doesn't use `default_config:`
 

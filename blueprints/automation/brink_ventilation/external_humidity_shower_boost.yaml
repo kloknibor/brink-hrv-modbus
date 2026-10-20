@@ -1,0 +1,101 @@
+blueprint:
+  name: Brink HRV – external bathroom humidity shower boost
+  description: >-
+    Opt-in humidity boost using any Home Assistant humidity sensor. The Brink
+    integration owns the safe temporary override and maximum duration; this
+    blueprint supplies configurable humidity persistence, hysteresis, minimum
+    run time and cooldown.
+  domain: automation
+  input:
+    humidity_sensor:
+      name: Bathroom humidity sensor
+      selector:
+        entity:
+          filter:
+            - domain: sensor
+    boost_active:
+      name: Brink Boost Active binary sensor
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+    start_humidity:
+      name: Start humidity
+      default: 70
+      selector:
+        number:
+          min: 30
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+    start_for:
+      name: Humidity must remain high for
+      default:
+        minutes: 2
+      selector:
+        duration:
+    stop_humidity:
+      name: Stop humidity
+      default: 60
+      selector:
+        number:
+          min: 20
+          max: 95
+          step: 1
+          unit_of_measurement: "%"
+    stop_for:
+      name: Humidity must remain below the stop threshold for
+      default:
+        minutes: 10
+      selector:
+        duration:
+    minimum_run:
+      name: Minimum boost run time
+      default:
+        minutes: 10
+      selector:
+        duration:
+    cooldown:
+      name: Cooldown after stopping
+      default:
+        minutes: 15
+      selector:
+        duration:
+    maximum_run:
+      name: Maximum waiting time
+      description: Match or exceed the integration's Boost Maximum Duration.
+      default:
+        minutes: 60
+      selector:
+        duration:
+mode: single
+max_exceeded: silent
+variables:
+  humidity_entity: !input humidity_sensor
+triggers:
+  - trigger: numeric_state
+    entity_id: !input humidity_sensor
+    above: !input start_humidity
+    for: !input start_for
+conditions:
+  - condition: state
+    entity_id: !input boost_active
+    state: "off"
+  - condition: template
+    value_template: >-
+      {{ states(humidity_entity) not in ['unknown', 'unavailable', 'none'] }}
+actions:
+  - action: brink_ventilation.start_boost
+  - delay: !input minimum_run
+  - wait_for_trigger:
+      - trigger: numeric_state
+        entity_id: !input humidity_sensor
+        below: !input stop_humidity
+        for: !input stop_for
+    timeout: !input maximum_run
+    continue_on_timeout: true
+  - condition: state
+    entity_id: !input boost_active
+    state: "on"
+  - action: brink_ventilation.stop_boost
+  - delay: !input cooldown

@@ -1,0 +1,65 @@
+title: Brink HRV
+views:
+  - title: Air Quality
+    path: air-quality
+    cards:
+      - type: entities
+        title: Air Quality
+        entities:
+          - sensor.brink_hrv_modbus_co2_sensor_1
+          - sensor.brink_hrv_modbus_co2_sensor_2
+          - sensor.brink_hrv_modbus_supply_humidity
+          - sensor.brink_hrv_modbus_exhaust_humidity
+          - sensor.brink_hrv_modbus_supply_absolute_humidity
+          - sensor.brink_hrv_modbus_exhaust_absolute_humidity
+          - sensor.brink_hrv_modbus_exhaust_humidity_baseline_deviation
+          - binary_sensor.brink_hrv_modbus_boost_active
+          - sensor.brink_hrv_modbus_boost_reason
+          - button.brink_hrv_modbus_start_boost
+          - button.brink_hrv_modbus_stop_boost_return_to_auto
+  - title: Ventilation
+    path: ventilation
+    cards:
+      - type: entities
+        title: Ventilation
+        entities:
+          - fan.brink_hrv_modbus_ventilation
+          - select.brink_hrv_modbus_modbus_control_mode
+          - number.brink_hrv_modbus_requested_direct_airflow
+          - sensor.brink_hrv_modbus_supply_flow_setpoint
+          - sensor.brink_hrv_modbus_supply_flow
+          - sensor.brink_hrv_modbus_exhaust_flow_setpoint
+          - sensor.brink_hrv_modbus_exhaust_flow
+          - sensor.brink_hrv_modbus_supply_fan_rpm
+          - sensor.brink_hrv_modbus_exhaust_fan_rpm
+          - sensor.brink_hrv_modbus_supply_pressure
+          - sensor.brink_hrv_modbus_exhaust_pressure
+  - title: Heat Recovery
+    path: heat-recovery
+    cards:
+      - type: entities
+        title: Heat Recovery
+        entities:
+          - sensor.brink_hrv_modbus_supply_temperature
+          - sensor.brink_hrv_modbus_exhaust_temperature
+          - sensor.brink_hrv_modbus_outside_air_temperature
+          - sensor.brink_hrv_modbus_estimated_heat_recovery_efficiency
+          - sensor.brink_hrv_modbus_estimated_recovered_thermal_power
+          - sensor.brink_hrv_modbus_bypass_status
+          - select.brink_hrv_modbus_bypass_mode
+          - sensor.brink_hrv_modbus_frost_status
+          - sensor.brink_hrv_modbus_frost_fan_reduction
+  - title: Maintenance
+    path: maintenance
+    cards:
+      - type: entities
+        title: Maintenance and Diagnostics
+        entities:
+          - binary_sensor.brink_hrv_modbus_filter_status
+          - sensor.brink_hrv_modbus_filter_used_volume
+          - sensor.brink_hrv_modbus_operating_hours
+          - sensor.brink_hrv_modbus_lifetime_air_volume
+          - sensor.brink_hrv_modbus_system_error_status
+          - sensor.brink_hrv_modbus_active_incident
+          - sensor.brink_hrv_modbus_supply_rpm_per_airflow
+          - sensor.brink_hrv_modbus_exhaust_rpm_per_airflow

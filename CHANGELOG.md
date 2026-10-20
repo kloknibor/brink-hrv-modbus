@@ -1,0 +1,19 @@
+# Changelog
+
+## 2.0.0 — kloknibor fork
+
+- Brand the visible integration, HACS metadata, documentation and support links
+  as **Brink HRV Modbus (kloknibor)** while preserving the
+  `brink_ventilation` domain and existing unique IDs.
+- Replace individual register polling with serialized, safe contiguous FC04
+  blocks plus lower-frequency FC03 diagnostics and reconnect/read-error
+  handling.
+- Add documented airflow, pressure, RPM, control-mode, outside-air,
+  maintenance, diagnostics, and calculated moisture/balance/recovery entities.
+- Add explicit Modbus control mode, direct airflow, bypass mode, safe boost
+  actions/buttons/services, ownership tracking, readback verification and
+  restart reconciliation.
+- Add opt-in external-sensor and internal-moisture shower boost blueprints,
+  dashboard YAML, manual boost example, and safety documentation.
+- Correct filter-air counter metadata from m³/h to cumulative m³ and retain
+  Brink's documented frost fan-reduction meaning.
