@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1 — setup hotfix
+
+- Prevent the coordinator from assigning its read-only calculated boost-time
+  properties during the initial data refresh, which caused setup to retry.
+
 ## 2.0.0 — kloknibor fork
 
 - Brand the visible integration, HACS metadata, documentation and support links
