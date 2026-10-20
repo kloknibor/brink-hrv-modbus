@@ -12,6 +12,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import (
     PERCENTAGE,
+    UnitOfEnergy,
     UnitOfPower,
     UnitOfPressure,
     UnitOfTemperature,
@@ -404,6 +405,15 @@ DESCRIPTIONS: tuple[BrinkSensorDescription, ...] = (
         suffix="estimated_recovered_thermal_power",
         unit=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
+        entity_category=EntityCategory.DIAGNOSTIC,
+    ),
+    BrinkSensorDescription(
+        key="estimated_recovered_thermal_energy",
+        name="Estimated Recovered Thermal Energy",
+        suffix="estimated_recovered_thermal_energy",
+        unit=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     BrinkSensorDescription(

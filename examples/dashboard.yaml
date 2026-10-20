@@ -45,6 +45,7 @@ views:
           - sensor.brink_hrv_modbus_outside_air_temperature
           - sensor.brink_hrv_modbus_estimated_heat_recovery_efficiency
           - sensor.brink_hrv_modbus_estimated_recovered_thermal_power
+          - sensor.brink_hrv_modbus_estimated_recovered_thermal_energy
           - sensor.brink_hrv_modbus_bypass_status
           - select.brink_hrv_modbus_bypass_mode
           - sensor.brink_hrv_modbus_frost_status

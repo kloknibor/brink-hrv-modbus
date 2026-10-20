@@ -132,15 +132,17 @@ inversion: Brink defines 0% as no reduction and 100% as maximum reduction.
 
 Calculated entities include supply/exhaust absolute humidity and dew point,
 humidity baseline/deviation/rate, airflow balance/imbalance/setpoint deviation,
-RPM per airflow diagnostic, and estimated recovered thermal power.
+RPM per airflow diagnostic, and estimated recovered thermal power and energy.
 Heat-recovery efficiency is only shown when there is a suitable indoor extract
 temperature, sufficient temperature difference, closed bypass, no active
 preheater, and no frost intervention. Flair 400 does not provide the optional
 dwelling NTC used by some Flair variants, so set an external indoor/extract
 temperature entity in the integration's **Configure** options if an estimate
-is wanted. The thermal-power and efficiency entities are estimates, not energy
-meters. Use Home Assistant's Integration helper on estimated recovered thermal
-power (W) to create an estimated kWh counter.
+is wanted. **Estimated Recovered Thermal Energy** integrates valid calculated
+power samples into a persistent kWh total. It starts at zero when this version
+is installed and deliberately does not bridge polling or Home Assistant
+outages. The power, energy, and efficiency entities are estimates, not
+independently metered energy savings.
 
 See [the dashboard example](examples/dashboard.yaml) for Air Quality,
 Ventilation, Heat Recovery, and Maintenance views.

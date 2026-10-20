@@ -22,6 +22,8 @@ from .lib.brink import Brink, BrinkModbusError
 _LOGGER = logging.getLogger(__name__)
 _POLL_INTERVAL = timedelta(seconds=10)
 _SLOW_INTERVAL = timedelta(seconds=60)
+_ENERGY_SAVE_INTERVAL = timedelta(minutes=1)
+_MAX_ENERGY_SAMPLE_GAP = timedelta(minutes=1)
 _DEFAULT_BOOST_MAXIMUM_MINUTES = 60
 _DIRECT_FLOW_MINIMUM = 50
 _DIRECT_FLOW_MAXIMUM_FLAIR_400 = 400
@@ -71,6 +73,12 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._boost_store = Store[dict[str, Any]](
             hass, 1, f"brink_ventilation.boost.{self._entry_id}"
         )
+        self._energy_store = Store[dict[str, float]](
+            hass, 1, f"brink_ventilation.thermal_energy.{self._entry_id}"
+        )
+        self._recovered_energy_kwh = 0.0
+        self._last_recovered_power_sample: tuple[datetime, float] | None = None
+        self._last_energy_save: datetime | None = None
         self.boost_active = False
         self.boost_reason = "Idle"
         self.boost_started: datetime | None = None
@@ -161,10 +169,19 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             raw_start = saved.get("started")
             if isinstance(raw_start, str):
                 self.boost_started = dt_util.parse_datetime(raw_start)
+        saved_energy = await self._energy_store.async_load()
+        if saved_energy:
+            try:
+                self._recovered_energy_kwh = max(
+                    0.0, float(saved_energy.get("recovered_energy_kwh", 0.0))
+                )
+            except (TypeError, ValueError):
+                _LOGGER.warning("Ignoring invalid persisted Brink thermal-energy value")
         return self
 
     async def async_close(self) -> None:
         """Close the TCP client without attempting to modify appliance control."""
+        await self._energy_store.async_save(self._energy_store_data())
         self._brink.close()
 
     @property
@@ -205,6 +222,7 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         data = {**self._slow_data, **dynamic}
         self._apply_data(data)
         self._calculate_metrics(data, now)
+        await self._accumulate_recovered_energy(data, now)
         await self._reconcile_boost(data, now)
         data.update(
             boost_active=self.boost_active,
@@ -347,6 +365,43 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
         else:
             data["recovered_thermal_power"] = None
+
+    async def _accumulate_recovered_energy(
+        self, data: dict[str, Any], now: datetime
+    ) -> None:
+        """Integrate valid recovered power without bridging unavailable periods."""
+        power = data.get("recovered_thermal_power")
+        if not isinstance(power, (int, float)) or not math.isfinite(power) or power < 0:
+            self._last_recovered_power_sample = None
+            data["estimated_recovered_thermal_energy"] = round(
+                self._recovered_energy_kwh, 3
+            )
+            return
+
+        previous = self._last_recovered_power_sample
+        if previous is not None:
+            previous_time, previous_power = previous
+            elapsed = now - previous_time
+            if timedelta(0) < elapsed <= _MAX_ENERGY_SAMPLE_GAP:
+                average_power = (previous_power + power) / 2
+                self._recovered_energy_kwh += (
+                    average_power * elapsed.total_seconds() / 3_600_000
+                )
+        self._last_recovered_power_sample = (now, float(power))
+        data["estimated_recovered_thermal_energy"] = round(
+            self._recovered_energy_kwh, 3
+        )
+
+        if (
+            self._last_energy_save is None
+            or now - self._last_energy_save >= _ENERGY_SAVE_INTERVAL
+        ):
+            await self._energy_store.async_save(self._energy_store_data())
+            self._last_energy_save = now
+
+    def _energy_store_data(self) -> dict[str, float]:
+        """Build serializable persistent state for the estimated-energy counter."""
+        return {"recovered_energy_kwh": self._recovered_energy_kwh}
 
     @staticmethod
     def _safe_ratio(numerator: Any, denominator: Any) -> float | None:

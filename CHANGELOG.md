@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 — recovered-energy estimate
+
+- Add a persistent, cumulative `Estimated Recovered Thermal Energy` kWh sensor
+  by integrating only valid estimated thermal-power samples. It starts with
+  this release and excludes long polling or Home Assistant outages.
+
 ## 2.0.2 — advanced telemetry hotfix
 
 - Correct the advanced-sensor metadata handling so Home Assistant registers the

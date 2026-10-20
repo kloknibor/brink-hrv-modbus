@@ -141,6 +141,27 @@ async def test_update_uses_grouped_snapshot_and_slow_interval(hass):
     }
 
 
+async def test_recovered_energy_integrates_valid_power_without_bridging_gaps(hass):
+    coordinator = BrinkHrvModbusCoordinator(hass)
+    now = dt_util.utcnow()
+    coordinator._recovered_energy_kwh = 1.0
+    coordinator._last_recovered_power_sample = (now - timedelta(minutes=1), 600.0)
+    coordinator._last_energy_save = now
+
+    data = {"recovered_thermal_power": 600.0}
+    await coordinator._accumulate_recovered_energy(data, now)
+
+    assert data["estimated_recovered_thermal_energy"] == 1.01
+
+    coordinator._last_recovered_power_sample = (now - timedelta(minutes=2), 600.0)
+    later_data = {"recovered_thermal_power": 600.0}
+    await coordinator._accumulate_recovered_energy(
+        later_data, now + timedelta(minutes=1)
+    )
+
+    assert later_data["estimated_recovered_thermal_energy"] == 1.01
+
+
 async def test_start_and_stop_boost_use_owned_switch_override(hass):
     coordinator = BrinkHrvModbusCoordinator(hass)
     coordinator._brink = mock_brink()
