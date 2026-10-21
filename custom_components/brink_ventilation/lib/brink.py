@@ -273,13 +273,16 @@ class Brink:
             data["active_incident"] = a4800[1]
         return data
 
+
     async def start_switch_override(self, position: int) -> None:
-        """Set 8001, enable 8000=1, and verify both documented readbacks."""
+        """Enable Modbus switch control before setting the position."""
         if position not in range(4):
             raise ValueError("switch position must be in the range 0..3")
+    
         async with self._io_lock:
-            await self._write_and_verify_unlocked(8001, position)
             await self._write_and_verify_unlocked(8000, 1)
+            await self._write_and_verify_unlocked(8001, position)
+
 
     async def start_direct_flow_override(self, airflow: int) -> None:
         """Set 8002, enable 8000=2, and verify both documented readbacks."""
